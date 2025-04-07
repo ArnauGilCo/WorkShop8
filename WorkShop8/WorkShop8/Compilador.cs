@@ -56,6 +56,7 @@ namespace WorkShop8
             {
                 txt_Compiler.BackColor = Color.Red;
             }
+            lblMissatge.Text = validacio ? "Expressió vàlida." : "Expressió invàlida.";
         }
 
         private void CompilerFile_Click(object sender, EventArgs e)
@@ -100,6 +101,7 @@ namespace WorkShop8
                     txt_Compiler.BackColor = Color.Red;
                     MessageBox.Show($"Error de validació a la línia {liniaError}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                lblMissatge.Text = validacio ? "Expressió vàlida." : "Expressió invàlida.";
             }
         }
 
@@ -120,6 +122,9 @@ namespace WorkShop8
         private int AvaluarPostfix(string expressio)
         {
             Pila<int> pila = new Pila<int>();
+
+            if (pila.Count < 2) throw new InvalidOperationException("Expressió postfix no vàlida.");
+
             string[] tokens = expressio.Trim().Split(' ');
 
             foreach (string token in tokens)
@@ -146,6 +151,8 @@ namespace WorkShop8
                             resultat = operand1 * operand2;
                             break;
                         case "/":
+                            if (operand2 == 0)
+                                throw new DivideByZeroException("Divisió per zero.");
                             resultat = operand1 / operand2;
                             break;
                         default:
