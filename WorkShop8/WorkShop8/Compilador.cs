@@ -102,4 +102,62 @@ namespace WorkShop8
                 }
             }
         }
+
+        private void btnCalcular_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string expressio = txtExpressio.Text;
+                int resultat = AvaluarPostfix(expressio);
+                lblResultat.Text = "Resultat: " + resultat.ToString();
+            }
+            catch (Exception ex)
+            {
+                lblResultat.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private int AvaluarPostfix(string expressio)
+        {
+            Pila<int> pila = new Pila<int>();
+            string[] tokens = expressio.Trim().Split(' ');
+
+            foreach (string token in tokens)
+            {
+                if (int.TryParse(token, out int nombre))
+                {
+                    pila.Push(nombre);
+                }
+                else
+                {
+                    int operand2 = pila.Pop();
+                    int operand1 = pila.Pop();
+                    int resultat;
+
+                    switch (token)
+                    {
+                        case "+":
+                            resultat = operand1 + operand2;
+                            break;
+                        case "-":
+                            resultat = operand1 - operand2;
+                            break;
+                        case "*":
+                            resultat = operand1 * operand2;
+                            break;
+                        case "/":
+                            resultat = operand1 / operand2;
+                            break;
+                        default:
+                            throw new InvalidOperationException("Operador invàlid: " + token);
+                    }
+
+                    pila.Push(resultat);
+                }
+            }
+
+            return pila.Pop();
+        }
+    }
 }
+    
