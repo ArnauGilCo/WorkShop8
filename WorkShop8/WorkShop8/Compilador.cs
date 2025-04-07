@@ -66,12 +66,12 @@ namespace WorkShop8
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string nomFitxer = openFileDialog1.FileName;
-                txt_Compiler.Text = nomFitxer; // Mostrar ruta al TextBox
+                txt_Compiler.Text = nomFitxer;
 
                 TaulaLlista<string> TlString = new TaulaLlista<string>();
                 bool validacio = true;
+                int liniaError = -1;
 
-                // Llegim el fitxer i omplim la TaulaLlista
                 using (StreamReader sr = new StreamReader(nomFitxer))
                 {
                     string linia;
@@ -81,19 +81,25 @@ namespace WorkShop8
                     }
                 }
 
-                // Validem totes les línies
                 for (int i = 0; i < TlString.Count(); i++)
                 {
                     if (!Validar(TlString[i]))
                     {
                         validacio = false;
+                        liniaError = i + 1; // línies comencen en 1
                         break;
                     }
                 }
 
-                // Canviem el color del TextBox segons si ha passat o no la validació
-                txt_Compiler.BackColor = validacio ? Color.Green : Color.Red;
+                if (validacio)
+                {
+                    txt_Compiler.BackColor = Color.Green;
+                }
+                else
+                {
+                    txt_Compiler.BackColor = Color.Red;
+                    MessageBox.Show($"Error de validació a la línia {liniaError}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
-    }
 }
