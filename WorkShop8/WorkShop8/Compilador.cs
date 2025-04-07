@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 namespace WorkShop8
@@ -50,12 +51,48 @@ namespace WorkShop8
             if (validacio)
             {
                 txt_Compiler.BackColor = Color.Green;
-                txt_Compiler.Text = "Correcte";
             }
             else
             {
                 txt_Compiler.BackColor = Color.Red;
-                txt_Compiler.Text = "Erroni";
+            }
+        }
+
+        private void CompilerFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Fitxers de text (*.txt)|*.txt|Tots els fitxers (*.*)|*.*";
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string nomFitxer = openFileDialog1.FileName;
+                txt_Compiler.Text = nomFitxer; // Mostrar ruta al TextBox
+
+                TaulaLlista<string> TlString = new TaulaLlista<string>();
+                bool validacio = true;
+
+                // Llegim el fitxer i omplim la TaulaLlista
+                using (StreamReader sr = new StreamReader(nomFitxer))
+                {
+                    string linia;
+                    while ((linia = sr.ReadLine()) != null)
+                    {
+                        TlString.Add(linia);
+                    }
+                }
+
+                // Validem totes les línies
+                for (int i = 0; i < TlString.Count(); i++)
+                {
+                    if (!Validar(TlString[i]))
+                    {
+                        validacio = false;
+                        break;
+                    }
+                }
+
+                // Canviem el color del TextBox segons si ha passat o no la validació
+                txt_Compiler.BackColor = validacio ? Color.Green : Color.Red;
             }
         }
     }
